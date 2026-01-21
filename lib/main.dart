@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:petnest/models/product.dart';
 import 'package:petnest/screens/authentication/Splashscreen.dart';
 import 'package:petnest/screens/authentication/app_shell_controller.dart';
 import 'package:petnest/screens/order/booking_screen.dart';
@@ -83,7 +84,7 @@ class PetNestApp extends StatelessWidget {
           '/signup': (context) => const SignUpScreen(),
           '/app': (context) => const AppShellController(),
           '/app/cart': (context) => const CartScreen(),
-          '/app/product-detail': (context) => const ProductDetailScreen(),
+          '/app/product-detail': (context) => const Placeholder(),
           '/app/pet-detail': (context) => const PetDetailScreen(),
           '/app/booking': (context) => const BookingScreen(),
           '/app/order-summary': (context) => const OrderSummaryScreen(),

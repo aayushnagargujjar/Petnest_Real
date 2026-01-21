@@ -46,7 +46,7 @@ class _PetCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/app/pet-detail', arguments: pet),
+      onTap: () => Navigator.pushNamed(context, '/app/pet-detail', arguments: pet,),
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(

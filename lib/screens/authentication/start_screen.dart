@@ -57,7 +57,7 @@ class StartScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () => Navigator.pushNamed(context, '/app'),
+                      onPressed: () => Navigator.pushNamed(context, '/login'),
                       child: const Text('Sign In'),
                     ),
                   ),

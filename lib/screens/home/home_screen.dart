@@ -15,12 +15,153 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final CollectionReference _productsRef = FirebaseFirestore.instance.collection('products');
+
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            _buildSearchBar(),
+            const SizedBox(height: 24),
+
+            const AutoScrollCarousel(),
+
+            const SizedBox(height: 24),
+
+            _buildServicesSection(context),
+            const SizedBox(height: 24),
+
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    'Bestsellers',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)
+                ),
+                const SizedBox(height: 16),
+
+                StreamBuilder<QuerySnapshot>(
+                  stream: _productsRef.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return const Center(child: Text("Error loading products"));
+                    }
+
+                    final allProducts = snapshot.data!.docs.map((doc) {
+                      return ProductModel.fromFirestore(doc);
+                    }).toList();
+                    List<ProductModel> displayList;
+
+                    final highValueItems = allProducts.where((p) => p.price > 500).toList();
+
+                    if (highValueItems.isNotEmpty) {
+                      displayList = highValueItems;
+                    } else {
+                      displayList = List.from(allProducts)..shuffle();
+                    }
+
+                    final finalBestsellers = displayList.take(6).toList();
+
+                    if (finalBestsellers.isEmpty) {
+                      return const Text("No products available.");
+                    }
+
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 0.6,
+                      ),
+                      itemCount: finalBestsellers.length,
+                      itemBuilder: (context, index) {
+                        return ProductCardOnline(product: finalBestsellers[index]);
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
+          ]
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: "Search 'dog food' or 'grooming'...",
+          hintStyle: TextStyle(color: Colors.grey[400]),
+          prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildServicesSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Services near you', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            TextButton(
+              onPressed: () => Navigator.pushNamed(context, '/app/services'),
+              child: const Text('SEE ALL', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 180,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: mockServices.length,
+            itemBuilder: (context, index) {
+              return ServiceCard(service: mockServices[index]);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class AutoScrollCarousel extends StatefulWidget {
+  const AutoScrollCarousel({super.key});
+
+  @override
+  State<AutoScrollCarousel> createState() => _AutoScrollCarouselState();
+}
+
+class _AutoScrollCarouselState extends State<AutoScrollCarousel> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   Timer? _timer;
-
-  // Reference to Firestore 'products' collection
-  final CollectionReference _productsRef = FirebaseFirestore.instance.collection('products');
 
   final List<String> _offerImages = [
     'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=600&q=80',
@@ -60,119 +201,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 1. Search Bar
-            _buildSearchBar(),
-            const SizedBox(height: 24),
-
-            // 2. Carousel
-            _buildOfferCarousel(),
-            const SizedBox(height: 24),
-
-            // 3. Services (Mock Data)
-            _buildServicesSection(context),
-            const SizedBox(height: 24),
-
-            // 4. BESTSELLERS GRID (Connected to Firebase ☁️)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                    'Bestsellers',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)
-                ),
-                const SizedBox(height: 16),
-
-                StreamBuilder<QuerySnapshot>(
-                  stream: _productsRef.snapshots(),
-                  builder: (context, snapshot) {
-                    // A. Loading State
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    // B. Error State
-                    if (snapshot.hasError) {
-                      return const Center(child: Text("Error loading products"));
-                    }
-
-                    // C. Data Loaded
-                    final allProducts = snapshot.data!.docs.map((doc) {
-                      return ProductModel.fromFirestore(doc);
-                    }).toList();
-
-                    // --- 🧠 SMART FALLBACK LOGIC ---
-                    List<ProductModel> displayList;
-
-                    // Logic: Try to find expensive items (Price > 500)
-                    final highValueItems = allProducts.where((p) => p.price > 500).toList();
-
-                    if (highValueItems.isNotEmpty) {
-                      displayList = highValueItems;
-                    } else {
-                      // Fallback: Shuffle and show random items if no expensive items found
-                      displayList = List.from(allProducts)..shuffle();
-                    }
-
-                    // Take max 6 items
-                    final finalBestsellers = displayList.take(6).toList();
-
-                    if (finalBestsellers.isEmpty) {
-                      return const Text("No products available.");
-                    }
-
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.6, // Keeps buttons readable
-                      ),
-                      itemCount: finalBestsellers.length,
-                      itemBuilder: (context, index) {
-                        // This Card now handles the "Click -> Open Details" logic internally
-                        return ProductCardOnline(product: finalBestsellers[index]);
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))
-          ]
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: "Search 'dog food' or 'grooming'...",
-          hintStyle: TextStyle(color: Colors.grey[400]),
-          prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOfferCarousel() {
     return AspectRatio(
       aspectRatio: 2 / 1,
       child: Container(
@@ -199,36 +227,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  Widget _buildServicesSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Services near you', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-            TextButton(
-              onPressed: () => Navigator.pushNamed(context, '/app/services'),
-              child: const Text('SEE ALL', style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 180,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: mockServices.length,
-            itemBuilder: (context, index) {
-              return ServiceCard(service: mockServices[index]);
-            },
-          ),
-        ),
-      ],
-    );
-  }
 }
+
 
 class ServiceCard extends StatelessWidget {
   final ServiceData service;

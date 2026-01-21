@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:petnest/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:petnest/providers/cart_provider.dart';
 import 'package:petnest/providers/user_provider.dart';
@@ -23,14 +24,22 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               Container(
                 width: 32,
                 height: 32,
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.all(0),
                 decoration: BoxDecoration(
                   color: Colors.blue[100],
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(40),
                 ),
-                child: SvgPicture.asset(
-                  'assets/icons/logosvg.svg',
-                  colorFilter: ColorFilter.mode(Colors.blue[600]!, BlendMode.srcIn),
+                child: IconButton(
+                  icon: SvgPicture.asset('assets/icons/logosvg.svg'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfileScreen(),
+                      ),
+                    );
+                  },
+
                 ),
               ),
               const SizedBox(width: 8),
@@ -82,7 +91,15 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         IconButton(
           icon: SvgPicture.asset('assets/icons/user.svg', width: 24, height: 24),
-          onPressed: () => Navigator.pushNamed(context, '/app/profile'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ProfileScreen(),
+              ),
+            );
+          },
+
         ),
         const SizedBox(width: 8),
       ],

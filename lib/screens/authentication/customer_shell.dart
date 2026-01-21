@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:petnest/screens/home/home_screen.dart';
 import 'package:petnest/screens/shop/shop_screen.dart';
-import 'package:petnest/screens/services_screen.dart';
-import 'package:petnest/screens/pets_screen.dart';
-import 'package:petnest/screens/profile_screen.dart';
+import 'package:petnest/screens/services/services_screen.dart';
+import 'package:petnest/screens/pets/pets_screen.dart';
+import 'package:petnest/screens/profile/profile_screen.dart';
 import 'package:petnest/widgets/customer_bottom_nav.dart';
 import 'package:petnest/widgets/main_app_bar.dart';
 

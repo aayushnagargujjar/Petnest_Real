@@ -137,8 +137,7 @@ class _ShopScreenState extends State<ShopScreen> {
                         crossAxisCount: 2,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
-                        // IMP: 0.75 ratio ensures the "ADD" button has enough space
-                        childAspectRatio: 0.55,
+                        childAspectRatio: 0.45,
                       ),
                       itemCount: filteredProducts.length,
                       itemBuilder: (context, index) {

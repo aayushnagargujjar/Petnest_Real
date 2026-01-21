@@ -28,7 +28,7 @@ class CartScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.blue[600]),
-                    child: const Text('Start Shopping'),
+                    child: const Text(' Start Shopping '),
                   )
                 ],
               ),

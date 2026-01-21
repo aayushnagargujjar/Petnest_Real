@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:petnest/models/product.dart';
 
 class PetDetailScreen extends StatelessWidget {
@@ -18,7 +17,6 @@ class PetDetailScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Header Image/Video Placeholder
           Positioned(
             top: 0,
             left: 0,
@@ -31,7 +29,7 @@ class PetDetailScreen extends StatelessWidget {
                       alignment: Alignment.center,
                       fit: StackFit.expand,
                       children: [
-                        Image.network(pet.image, fit: BoxFit.cover), // Thumbnail
+                        Image.network(pet.image, fit: BoxFit.cover),
                         Container(color: Colors.black26),
                         const Icon(Icons.play_circle_fill, color: Colors.white, size: 64),
                       ],
