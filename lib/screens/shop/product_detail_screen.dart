@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:petnest/models/product_model.dart';
 import 'package:provider/provider.dart';
@@ -17,11 +19,12 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen>{
 
-  bool isLiked = false;
+
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
     final cartProvider = Provider.of<CartProvider>(context);
+   final user =FirebaseAuth.instance.currentUser;
     final itemInCart =
     cartProvider.items.any((item) => item.id == product.id);
     final quantity = itemInCart
@@ -29,7 +32,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>{
         .firstWhere((item) => item.id == product.id)
         .quantity
         : 0;
-
+    final ref = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uid)
+        .collection('wishlist')
+        .doc(product.id);
+    bool isLiked =true;
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
@@ -57,7 +65,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>{
                     ),
                   ),
 
-                  /// 🌗 GRADIENT OVERLAY
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -72,7 +79,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>{
                     ),
                   ),
 
-                  /// ❤️ FAVORITE ICON
               Positioned(
                 top: 60,
                 right: 20,
@@ -110,7 +116,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>{
             ),
           ),
 
-          /// 📄 PRODUCT DETAILS
           SliverToBoxAdapter(
             child: Container(
               transform: Matrix4.translationValues(0, -20, 0),
@@ -131,7 +136,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>{
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// 🏷 NAME + PRICE
+
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

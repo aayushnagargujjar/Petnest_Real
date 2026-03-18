@@ -10,8 +10,8 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);
     final total = cart.totalAmount;
-    const delivery = 29.0;
-    const platform = 6.0;
+    const delivery = 40.0;
+    const platform = 15.0;
     final grandTotal = total + delivery + platform;
 
     return Scaffold(

@@ -11,7 +11,6 @@ class ProductCardOnline extends StatelessWidget {
 
   const ProductCardOnline({super.key, required this.product});
 
-  // ❤️ LIKE / UNLIKE
   Future<void> _toggleLike(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -63,7 +62,7 @@ class ProductCardOnline extends StatelessWidget {
 
         children: [
             Expanded(
-          // 🔹 IMAGE + NAVIGATION
+
           child:InkWell(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
             onTap: () {
@@ -88,7 +87,6 @@ class ProductCardOnline extends StatelessWidget {
                   ),
                 ),
 
-                // ❤️ LIKE BUTTON (NOW WORKS)
                 Positioned(
                   top: 8,
                   right: 8,
@@ -115,7 +113,7 @@ class ProductCardOnline extends StatelessWidget {
             ),
           ),
             ),
-          // 🔹 DETAILS
+
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(

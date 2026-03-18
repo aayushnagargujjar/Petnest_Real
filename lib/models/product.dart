@@ -16,10 +16,10 @@ class Product {
   final List<String>? tags;
   final String? unitPrice;
   final int? options;
-  final String? listingType; // 'buy' or 'adopt'
+  final String? listingType;
   final String? breed;
   final String? age;
-  final String? gender; // 'Male' or 'Female'
+  final String? gender;
   final bool? verified;
   final String? videoUrl;
   final double? advancePrice;

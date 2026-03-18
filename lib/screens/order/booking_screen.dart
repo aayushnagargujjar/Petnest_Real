@@ -37,7 +37,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       children: [
                         Text(doctor.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         Text('Service: Clinic Visit', style: const TextStyle(color: Colors.grey)), 
-                        // Note: Ideally pass service type too
+
                       ],
                     ),
                   ),

@@ -16,7 +16,7 @@ class _ShopScreenState extends State<ShopScreen> {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
-  // Reference to Firestore 'products' collection
+
   final CollectionReference _productsRef = FirebaseFirestore.instance.collection('products');
 
   @override
@@ -50,12 +50,11 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
         ),
 
-        // --- Main Content ---
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- Sidebar Categories ---
+
               Container(
                 width: 85,
                 color: Colors.white,
@@ -93,7 +92,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
 
-              // --- Product Grid (StreamBuilder) ---
+
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: _productsRef.snapshots(),
@@ -106,12 +105,11 @@ class _ShopScreenState extends State<ShopScreen> {
                       return const Center(child: Text("Error loading products"));
                     }
 
-                    // 1. Convert Data from Firebase to ProductModel
                     final allProducts = snapshot.data!.docs.map((doc) {
                       return ProductModel.fromFirestore(doc);
                     }).toList();
 
-                    // 2. Filter Data (Category + Search)
+
                     final filteredProducts = allProducts
                         .where((p) => p.category != 'Pets')
                         .where((p) => _activeCategory == 'All' || p.category == _activeCategory)
